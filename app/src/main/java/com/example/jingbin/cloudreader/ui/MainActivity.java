@@ -4,8 +4,6 @@ import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -46,6 +44,7 @@ import com.example.jingbin.cloudreader.ui.wan.child.MyCoinActivity;
 import com.example.jingbin.cloudreader.ui.wan.child.MyCollectActivity;
 import com.example.jingbin.cloudreader.utils.BaseTools;
 import com.example.jingbin.cloudreader.utils.CommonUtils;
+import com.example.jingbin.cloudreader.utils.DebugUtil;
 import com.example.jingbin.cloudreader.utils.DialogBuild;
 import com.example.jingbin.cloudreader.utils.GlideUtil;
 import com.example.jingbin.cloudreader.utils.PerfectClickListener;
@@ -71,10 +70,13 @@ import io.reactivex.functions.Consumer;
  * <a href="https://github.com/youlookwhat/CloudReader">source code</a>
  * <a href="http://www.jianshu.com/u/e43c6e979831">Contact me</a>
  */
+
+//MainViewModel iffy 负责navigation页面的内容绑定
+//ActivityMainBinding navigationView
 public class MainActivity extends BaseActivity<MainViewModel, ActivityMainBinding> implements View.OnClickListener {
 
     public static boolean isLaunch;
-    private ViewPager vpContent;
+    private ViewPager viewPagerContent;
     private ImageView ivTitleTwo;
     private ImageView ivTitleOne;
     private ImageView ivTitleThree;
@@ -83,11 +85,20 @@ public class MainActivity extends BaseActivity<MainViewModel, ActivityMainBindin
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //调用baseActivity里面的setContentView, 把baseActivity和MainActivity的layout进行组合
+        //activity_main只有navigation的内容
         setContentView(R.layout.activity_main);
+        //加载navigationView
         showContentView();
+
         isLaunch = true;
+
+        //statudsBar toolBar 设置
         initView();
+
+        //初始化三个fragment
         initContentFragment();
+
         initDrawerLayout();
         initRxBus();
     }
@@ -100,6 +111,7 @@ public class MainActivity extends BaseActivity<MainViewModel, ActivityMainBindin
         bindingView.include.viewStatus.setLayoutParams(layoutParams);
     }
 
+    //statudsBar toolBar 设置
     private void initView() {
         setNoTitle();
         setSupportActionBar(bindingView.include.toolbar);
@@ -108,7 +120,10 @@ public class MainActivity extends BaseActivity<MainViewModel, ActivityMainBindin
             //去除默认Title显示
             actionBar.setDisplayShowTitleEnabled(false);
         }
-        vpContent = bindingView.include.vpContent;
+
+        //bindingView.include 包含在 android:id="@+id/include"里面的layout="@layout/app_bar_main"
+        //Toolbar监听
+        viewPagerContent = bindingView.include.vpContent;
         ivTitleOne = bindingView.include.ivTitleOne;
         ivTitleTwo = bindingView.include.ivTitleTwo;
         ivTitleThree = bindingView.include.ivTitleThree;
@@ -132,6 +147,7 @@ public class MainActivity extends BaseActivity<MainViewModel, ActivityMainBindin
         viewModel.isReadOk.set(SPUtils.isRead());
 
         GlideUtil.displayCircle(bind.ivAvatar, ConstantsImageUrl.IC_AVATAR);
+        //NavigationView 设置回调监听
         bind.llNavExit.setOnClickListener(this);
         bind.ivAvatar.setOnClickListener(this);
 
@@ -163,17 +179,19 @@ public class MainActivity extends BaseActivity<MainViewModel, ActivityMainBindin
         });
     }
 
+    //初始化三个fragment
     private void initContentFragment() {
         ArrayList<Fragment> mFragmentList = new ArrayList<>();
+        //每个fragment都含有ViewPager
         mFragmentList.add(new WanFragment());
         mFragmentList.add(new GankFragment());
         mFragmentList.add(new FilmFragment());
         // 注意使用的是：getSupportFragmentManager
         MyFragmentPagerAdapter adapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), mFragmentList);
-        vpContent.setAdapter(adapter);
+        viewPagerContent.setAdapter(adapter);
         // 设置ViewPager最大缓存的页面个数(cpu消耗少)
-        vpContent.setOffscreenPageLimit(2);
-        vpContent.addOnPageChangeListener(new OnMyPageChangeListener() {
+        viewPagerContent.setOffscreenPageLimit(2);
+        viewPagerContent.addOnPageChangeListener(new OnMyPageChangeListener() {
 
             @Override
             public void onPageSelected(int position) {
@@ -195,7 +213,7 @@ public class MainActivity extends BaseActivity<MainViewModel, ActivityMainBindin
         setCurrentItem(0);
     }
 
-
+    //NavigationView的点击回调
     private PerfectClickListener listener = new PerfectClickListener() {
         @Override
         protected void onNoDoubleClick(final View v) {
@@ -282,17 +300,17 @@ public class MainActivity extends BaseActivity<MainViewModel, ActivityMainBindin
                 break;
             case R.id.iv_title_two:
                 // 不然cpu会有损耗
-                if (vpContent.getCurrentItem() != 1) {
+                if (viewPagerContent.getCurrentItem() != 1) {
                     setCurrentItem(1);
                 }
                 break;
             case R.id.iv_title_one:
-                if (vpContent.getCurrentItem() != 0) {
+                if (viewPagerContent.getCurrentItem() != 0) {
                     setCurrentItem(0);
                 }
                 break;
             case R.id.iv_title_three:
-                if (vpContent.getCurrentItem() != 2) {
+                if (viewPagerContent.getCurrentItem() != 2) {
                     setCurrentItem(2);
                 }
                 break;
@@ -332,7 +350,7 @@ public class MainActivity extends BaseActivity<MainViewModel, ActivityMainBindin
                 isTwo = true;
                 break;
         }
-        vpContent.setCurrentItem(position);
+        viewPagerContent.setCurrentItem(position);
         ivTitleOne.setSelected(isOne);
         ivTitleTwo.setSelected(isTwo);
         ivTitleThree.setSelected(isThree);
@@ -372,8 +390,10 @@ public class MainActivity extends BaseActivity<MainViewModel, ActivityMainBindin
         return super.onOptionsItemSelected(item);
     }
 
+    //iffy 这段代码不会走到，在@onKeyDonw()里已经处理了back按钮
     @Override
     public void onBackPressed() {
+        DebugUtil.debug(MainActivity.class.getSimpleName()+"onBackPressed（） 这段代码不需要，在onkeydonw里已经处理了back按钮 ");
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -388,7 +408,7 @@ public class MainActivity extends BaseActivity<MainViewModel, ActivityMainBindin
     private void getClipContent() {
         String clipContent = BaseTools.getClipContent();
         if (!TextUtils.isEmpty(clipContent)) {
-            DialogBuild.showCustom(vpContent, clipContent, "打开其中链接", new DialogInterface.OnClickListener() {
+            DialogBuild.showCustom(viewPagerContent, clipContent, "打开其中链接", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     WebViewActivity.loadUrl(MainActivity.this, clipContent, "加载中..");
@@ -399,33 +419,15 @@ public class MainActivity extends BaseActivity<MainViewModel, ActivityMainBindin
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        if (newConfig.fontScale != 1) {
-            getResources();
-        }
-    }
-
-    /**
-     * 禁止改变字体大小
-     */
-    @Override
-    public Resources getResources() {
-        Resources res = super.getResources();
-        Configuration config = new Configuration();
-        config.setToDefaults();
-        res.updateConfiguration(config, res.getDisplayMetrics());
-        return res;
-    }
-
-
-    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+            DebugUtil.debug(MainActivity.class.getSimpleName()+"onKeyDown（） keyCode == KeyEvent.KEYCODE_BACK ");
             if (bindingView.drawerLayout.isDrawerOpen(GravityCompat.START)) {
                 bindingView.drawerLayout.closeDrawer(GravityCompat.START);
             } else {
                 // 不退出程序，进入后台
+                //iffy 这里把back的行为改为home键行为，activity不会销毁,这样下次再点击launch icon就可以直接恢复这个界面，不会再显示广告
+                //改写返回按键，不销毁Activity https://blog.csdn.net/qq_29543611/article/details/80219670
                 moveTaskToBack(true);
             }
             return true;
@@ -460,7 +462,20 @@ public class MainActivity extends BaseActivity<MainViewModel, ActivityMainBindin
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        DebugUtil.debug(MainActivity.class.getSimpleName()+"onPause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        DebugUtil.debug(MainActivity.class.getSimpleName()+"onStop");
+    }
+
+    @Override
     public void onDestroy() {
+        DebugUtil.debug(MainActivity.class.getSimpleName()+"onDestroy");
         super.onDestroy();
         isLaunch = false;
         // 杀死该应用进程 需要权限

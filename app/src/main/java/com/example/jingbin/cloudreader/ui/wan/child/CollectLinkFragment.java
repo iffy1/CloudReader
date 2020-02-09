@@ -28,7 +28,7 @@ public class CollectLinkFragment extends BaseFragment<CollectLinkModel, Fragment
     private CollectUrlAdapter mAdapter;
 
     @Override
-    public int setContent() {
+    public int getContent() {
         return R.layout.fragment_wan_android;
     }
 

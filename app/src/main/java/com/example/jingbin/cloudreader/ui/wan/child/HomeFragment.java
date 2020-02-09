@@ -58,7 +58,7 @@ public class HomeFragment extends BaseFragment<WanAndroidListViewModel, Fragment
     }
 
     @Override
-    public int setContent() {
+    public int getContent() {
         return R.layout.fragment_wan_android;
     }
 

@@ -51,7 +51,7 @@ public class FilmFragment extends BaseFragment<NoViewModel, FragmentContentBindi
     }
 
     @Override
-    public int setContent() {
+    public int getContent() {
         return R.layout.fragment_content;
     }
 

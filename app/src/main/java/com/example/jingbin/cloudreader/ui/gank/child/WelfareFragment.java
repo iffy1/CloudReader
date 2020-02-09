@@ -33,7 +33,7 @@ public class WelfareFragment extends BaseFragment<WelfareViewModel, FragmentWelf
     private ArrayList<String> imgTitleList = new ArrayList<>();
 
     @Override
-    public int setContent() {
+    public int getContent() {
         return R.layout.fragment_welfare;
     }
 

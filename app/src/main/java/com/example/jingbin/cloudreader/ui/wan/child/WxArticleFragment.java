@@ -37,7 +37,7 @@ public class WxArticleFragment extends BaseFragment<WxArticleViewModel, Fragment
     private int wxArticleId;
 
     @Override
-    public int setContent() {
+    public int getContent() {
         return R.layout.fragment_wxarticle;
     }
 

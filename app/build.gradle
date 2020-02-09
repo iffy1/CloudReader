@@ -21,45 +21,45 @@ android {
     }
 
     // ------------------------注释下面代码(签名配置) ↓↓↓↓↓-----------------------------
-    signingConfigs {
-        debug {
-            storeFile file(pStoreFile)
-            storePassword pStorePassword
-            keyAlias pKeyAlias
-            keyPassword pKeyPassword
-            v1SigningEnabled true
-            v2SigningEnabled true
-        }
-
-        release {
-            storeFile file(pStoreFile)
-            storePassword pStorePassword
-            keyAlias pKeyAlias
-            keyPassword pKeyPassword
-            v1SigningEnabled true
-            v2SigningEnabled true
-        }
-    }
+//    signingConfigs {
+//        debug {
+//            storeFile file(pStoreFile)
+//            storePassword pStorePassword
+//            keyAlias pKeyAlias
+//            keyPassword pKeyPassword
+//            v1SigningEnabled true
+//            v2SigningEnabled true
+//        }
+//
+//        release {
+//            storeFile file(pStoreFile)
+//            storePassword pStorePassword
+//            keyAlias pKeyAlias
+//            keyPassword pKeyPassword
+//            v1SigningEnabled true
+//            v2SigningEnabled true
+//        }
+//    }
 
     // gradle assembleRelease
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
-            // apk重命名
-            android.applicationVariants.all { variant ->
-                variant.outputs.all {
-                    outputFileName = "${project.name}_${defaultConfig.versionName}_${variant.buildType.name}.apk"
-                }
-            }
-        }
-        debug {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.debug
-        }
-    }
+//    buildTypes {
+//        release {
+//            minifyEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            signingConfig signingConfigs.release
+//            // apk重命名
+//            android.applicationVariants.all { variant ->
+//                variant.outputs.all {
+//                    outputFileName = "${project.name}_${defaultConfig.versionName}_${variant.buildType.name}.apk"
+//                }
+//            }
+//        }
+//        debug {
+//            minifyEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            signingConfig signingConfigs.debug
+//        }
+//    }
     // ------------------------↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑-----------------------------
 
     compileOptions {
@@ -123,4 +123,9 @@ dependencies {
     // bugly
     implementation 'com.tencent.bugly:crashreport:2.6.6.1'
     implementation 'com.tencent.bugly:nativecrashreport:3.3.1'
+
+    //内存泄漏检查
+    //leackcanary Content Provider 在 Application 创建之前被自动加载，因此无需用户手动在 onCrate() 中进行初始化
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.1'
+
 }

@@ -46,7 +46,7 @@ public class BookCustomFragment extends BaseFragment<NoViewModel, FragmentBookCu
     private GridLayoutManager mLayoutManager;
 
     @Override
-    public int setContent() {
+    public int getContent() {
         return R.layout.fragment_book_custom;
     }
 

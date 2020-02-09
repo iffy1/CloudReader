@@ -12,6 +12,15 @@ import java.util.List;
  * Created by jingbin on 2016/12/6.
  */
 
+//iffy FragmentStatePagerAdapter detach 时候销毁 fragment 节省内存
+//public void destroyItem{
+//    this.mCurTransaction.remove(fragment);
+// }
+
+//FragmentPagerAdapter只会调用detach()
+//public void destroyItem{
+//    mCurTransaction.detach((Fragment)object);
+// }
 public class MyFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     private List<?> mFragment;

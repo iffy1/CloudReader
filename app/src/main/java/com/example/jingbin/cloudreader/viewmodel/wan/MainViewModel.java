@@ -21,6 +21,7 @@ import io.reactivex.disposables.Disposable;
  * @author jingbin
  * @data 2019/9/24
  * @Description 首页ViewModel
+ * iffy 负责navigation页面的内容绑定
  */
 
 public class MainViewModel extends BaseViewModel {

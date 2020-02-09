@@ -23,6 +23,7 @@ import com.example.jingbin.cloudreader.R;
 import com.example.jingbin.cloudreader.databinding.ActivityBaseBinding;
 import com.example.jingbin.cloudreader.utils.ClassUtil;
 import com.example.jingbin.cloudreader.utils.CommonUtils;
+import com.example.jingbin.cloudreader.utils.DebugUtil;
 import com.example.jingbin.cloudreader.view.statusbar.StatusBarUtil;
 
 import io.reactivex.disposables.CompositeDisposable;
@@ -41,6 +42,7 @@ public abstract class BaseActivity<VM extends AndroidViewModel, SV extends ViewD
     private View errorView;
     private View loadingView;
     private ActivityBaseBinding mBaseBinding;
+    //加载中（音符）帧动画
     private AnimationDrawable mAnimationDrawable;
     private CompositeDisposable mCompositeDisposable;
 
@@ -55,30 +57,46 @@ public abstract class BaseActivity<VM extends AndroidViewModel, SV extends ViewD
 
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
-
+        DebugUtil.debug(BaseActivity.class.getSimpleName()+"LayoutInflater.from(this)"+LayoutInflater.from(this));
+        DebugUtil.debug(BaseActivity.class.getSimpleName()+"getLayoutInflater():"+getLayoutInflater());
+        //两种方法获取的layoutInflater是一样的
+        //2020-02-06 14:31:59.144 2269-2269/com.example.jingbin.cloudreader D/iffy: BaseActivityLayoutInflater.from(this)com.android.internal.policy.PhoneLayoutInflater@df3d846
+        //2020-02-06 14:31:59.144 2269-2269/com.example.jingbin.cloudreader D/iffy: BaseActivitygetLayoutInflater():com.android.internal.policy.PhoneLayoutInflater@df3d846
         mBaseBinding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.activity_base, null, false);
+        //对应activity的Layout
         bindingView = DataBindingUtil.inflate(getLayoutInflater(), layoutResID, null, false);
 
         // content
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         bindingView.getRoot().setLayoutParams(params);
         RelativeLayout mContainer = (RelativeLayout) mBaseBinding.getRoot().findViewById(R.id.container);
+        //把子view（layoutResID）放入到baseView的container里面
         mContainer.addView(bindingView.getRoot());
+        //把bseview设置成content
         getWindow().setContentView(mBaseBinding.getRoot());
 
+        //View inflate()
+        //ViewStub 是一个不可见，size为0的View，它通常用于在适当的时机去懒加载布局。
+        //ViewStub 的布局在加载后会直接替换它自己，所以 ViewStub 存在于 View hierarchy 直到它调用了 setVisiblity() 或者 inflate()。
         loadingView = ((ViewStub) findViewById(R.id.vs_loading)).inflate();
         ImageView img = loadingView.findViewById(R.id.img_progress);
 
-        // 加载动画
+        // 加载帧动画
         mAnimationDrawable = (AnimationDrawable) img.getDrawable();
         // 默认进入页面就开启动画
         if (!mAnimationDrawable.isRunning()) {
             mAnimationDrawable.start();
         }
 
+        //iffy 注释后没看到影响
         setToolBar(mBaseBinding.toolBar);
+
         bindingView.getRoot().setVisibility(View.GONE);
+
+        // 设置透明状态栏，兼容4.4
         initStatusBar();
+
+        //对于mainActivity来说 初始化的是navigation drawer里面的vm
         initViewModel();
     }
 
@@ -91,7 +109,9 @@ public abstract class BaseActivity<VM extends AndroidViewModel, SV extends ViewD
      * 初始化ViewModel
      */
     private void initViewModel() {
+        DebugUtil.debug("initViewModel() Class:"+this.getClass().getSimpleName());
         Class<VM> viewModelClass = ClassUtil.getViewModel(this);
+        DebugUtil.debug("获取viewModel:"+viewModelClass.getSimpleName());
         if (viewModelClass != null) {
             this.viewModel = ViewModelProviders.of(this).get(viewModelClass);
         }
@@ -99,6 +119,7 @@ public abstract class BaseActivity<VM extends AndroidViewModel, SV extends ViewD
 
     /**
      * 设置titlebar
+     * iffy没看到实际效果
      */
     protected void setToolBar(Toolbar toolbar) {
         setSupportActionBar(toolbar);
@@ -166,6 +187,7 @@ public abstract class BaseActivity<VM extends AndroidViewModel, SV extends ViewD
         if (mAnimationDrawable.isRunning()) {
             mAnimationDrawable.stop();
         }
+        //ViewStub 是XML里面的懒加载机制，必须使用inflate()才能让他显示
         if (errorView == null) {
             ViewStub viewStub = (ViewStub) findViewById(R.id.vs_error_refresh);
             errorView = viewStub.inflate();
@@ -208,7 +230,7 @@ public abstract class BaseActivity<VM extends AndroidViewModel, SV extends ViewD
     }
 
     /**
-     * 禁止改变字体大小
+     * 禁止改变字体大小 字号不随系统改变
      */
     @Override
     public Resources getResources() {

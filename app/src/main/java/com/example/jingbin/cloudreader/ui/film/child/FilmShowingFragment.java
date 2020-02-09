@@ -30,7 +30,7 @@ public class FilmShowingFragment extends BaseFragment<FilmViewModel, FragmentWan
     private FragmentActivity activity;
 
     @Override
-    public int setContent() {
+    public int getContent() {
         return R.layout.fragment_wan_android;
     }
 

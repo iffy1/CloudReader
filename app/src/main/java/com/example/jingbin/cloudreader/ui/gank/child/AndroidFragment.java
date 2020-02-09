@@ -52,7 +52,7 @@ public class AndroidFragment extends BaseFragment<GankViewModel, FragmentAndroid
     }
 
     @Override
-    public int setContent() {
+    public int getContent() {
         return R.layout.fragment_android;
     }
 

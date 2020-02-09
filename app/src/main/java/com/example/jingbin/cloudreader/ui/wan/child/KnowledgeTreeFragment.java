@@ -36,7 +36,7 @@ public class KnowledgeTreeFragment extends BaseFragment<TreeViewModel, FragmentK
     private int firstPosition = 0;
 
     @Override
-    public int setContent() {
+    public int getContent() {
         return R.layout.fragment_knowledge_tree;
     }
 

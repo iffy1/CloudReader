@@ -37,7 +37,7 @@ public class CategoryArticleFragment extends BaseFragment<WanAndroidListViewMode
     private boolean mIsPrepared;
 
     @Override
-    public int setContent() {
+    public int getContent() {
         return R.layout.fragment_category_article;
     }
 

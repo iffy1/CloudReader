@@ -39,7 +39,7 @@ public class CoinDetailFragment extends BaseFragment<CoinListViewModel, Fragment
     private HeaderCoinDetailBinding headerBinding;
 
     @Override
-    public int setContent() {
+    public int getContent() {
         return R.layout.fragment_wan_android;
     }
 

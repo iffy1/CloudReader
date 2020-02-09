@@ -38,7 +38,7 @@ public class NavigationFragment extends BaseFragment<NavigationViewModel, Fragme
     private LinearLayoutManager layoutManager;
 
     @Override
-    public int setContent() {
+    public int getContent() {
         return R.layout.fragment_navi;
     }
 

@@ -36,7 +36,7 @@ public class BookListFragment extends BaseFragment<BookListViewModel, FragmentWa
     private HeaderItemBookBinding oneBinding;
 
     @Override
-    public int setContent() {
+    public int getContent() {
         return R.layout.fragment_wan_android;
     }
 

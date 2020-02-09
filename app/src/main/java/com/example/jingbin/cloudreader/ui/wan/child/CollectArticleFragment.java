@@ -31,7 +31,7 @@ public class CollectArticleFragment extends BaseFragment<ArticleListViewModel, F
     private WanAndroidAdapter mAdapter;
 
     @Override
-    public int setContent() {
+    public int getContent() {
         return R.layout.fragment_wan_android;
     }
 

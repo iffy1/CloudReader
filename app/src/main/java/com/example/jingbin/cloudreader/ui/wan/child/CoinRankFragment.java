@@ -36,7 +36,7 @@ public class CoinRankFragment extends BaseFragment<CoinListViewModel, FragmentWa
     private HeaderCoinRankBinding headerBinding;
 
     @Override
-    public int setContent() {
+    public int getContent() {
         return R.layout.fragment_wan_android;
     }
 

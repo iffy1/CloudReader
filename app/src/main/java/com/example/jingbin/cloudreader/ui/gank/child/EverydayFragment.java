@@ -57,7 +57,7 @@ public class EverydayFragment extends BaseFragment<EverydayViewModel, FragmentEv
     private boolean isLoadBanner;
 
     @Override
-    public int setContent() {
+    public int getContent() {
         return R.layout.fragment_everyday;
     }
 

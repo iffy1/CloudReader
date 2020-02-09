@@ -39,19 +39,29 @@ public class GankFragment extends BaseFragment<NoViewModel, FragmentContentBindi
         mIsPrepared = true;
     }
 
+    //setUserVisibleHint（）fragment可见的回调
     @Override
     protected void loadData() {
         if (!mIsPrepared || !mIsVisible || !mIsFirst) {
             return;
         }
+        //首先在主线程的Handler中就已经post进去了一个Runnable来执行performTraversals方法，
+        // 当然就按照顺序执行了post我们调用View.post(runnable)方法到主线程Handler、测量、布局、绘制等一系列操作。
+        // 然而由于Handler的机制，它是将所有的message都post到一个MessageQueue中，
+        // 按照顺序执行这些消息。因此只有当执行完测量、布局、绘制之后，才能执行我们的Runnable，
+        // 所以我们这时就能够获取到正确的宽高了~
+        //使用postDelayed方法就是为了等viewPager准备好后再去写内容
+
         bindingView.vpGank.postDelayed(() -> {
             showContentView();
+            //实例化fragment
             initFragmentList();
             MyFragmentPagerAdapter myAdapter = new MyFragmentPagerAdapter(getChildFragmentManager(), mFragments, mTitleList);
             bindingView.vpGank.setAdapter(myAdapter);
             myAdapter.notifyDataSetChanged();
             // 左右预加载页面的个数
             bindingView.vpGank.setOffscreenPageLimit(3);
+            //绑定tabView和viewpager
             bindingView.tabGank.setupWithViewPager(bindingView.vpGank);
             // item点击跳转
             initRxBus();
@@ -60,10 +70,11 @@ public class GankFragment extends BaseFragment<NoViewModel, FragmentContentBindi
     }
 
     @Override
-    public int setContent() {
+    public int getContent() {
         return R.layout.fragment_content;
     }
 
+    //新建需要的Fragment
     private void initFragmentList() {
         mTitleList.clear();
         mTitleList.add("每日推荐");

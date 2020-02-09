@@ -36,7 +36,7 @@ public class JokeFragment extends BaseFragment<JokeViewModel, FragmentWanAndroid
     private JokeAdapter mAdapter;
 
     @Override
-    public int setContent() {
+    public int getContent() {
         return R.layout.fragment_wan_android;
     }
 

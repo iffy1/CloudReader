@@ -41,7 +41,7 @@ public class OneFragment extends BaseFragment<OneViewModel, FragmentOneBinding> 
     private HeaderItemOneBinding oneBinding;
 
     @Override
-    public int setContent() {
+    public int getContent() {
         return R.layout.fragment_one;
     }
 

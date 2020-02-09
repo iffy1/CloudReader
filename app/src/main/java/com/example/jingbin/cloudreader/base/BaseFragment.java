@@ -59,17 +59,21 @@ public abstract class BaseFragment<VM extends AndroidViewModel, SV extends ViewD
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View inflate = inflater.inflate(R.layout.fragment_base, null);
-        bindingView = DataBindingUtil.inflate(activity.getLayoutInflater(), setContent(), null, false);
+        View baseFragmentView = inflater.inflate(R.layout.fragment_base, null);
+        //绑定对应的Fragement layout
+        bindingView = DataBindingUtil.inflate(activity.getLayoutInflater(), getContent(), null, false);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         bindingView.getRoot().setLayoutParams(params);
-        RelativeLayout mContainer = inflate.findViewById(R.id.container);
+        RelativeLayout mContainer = baseFragmentView.findViewById(R.id.container);
+        //把bindingview加到base view的container里面
         mContainer.addView(bindingView.getRoot());
-        return inflate;
+        return baseFragmentView;
     }
 
     /**
      * 在这里实现Fragment数据的缓加载.
+     * iffy 使用场景：当fragment结合viewpager使用的时候 这个方法会调用
+     * 这个方法是在oncreateView之前使用 不要使用控件
      */
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
@@ -132,7 +136,7 @@ public abstract class BaseFragment<VM extends AndroidViewModel, SV extends ViewD
     /**
      * 布局
      */
-    public abstract int setContent();
+    public abstract int getContent();
 
     /**
      * 加载失败后点击后的操作
@@ -189,6 +193,7 @@ public abstract class BaseFragment<VM extends AndroidViewModel, SV extends ViewD
      * 加载失败点击重新加载的状态
      */
     protected void showError() {
+        //ViewStub 是XML里面的懒加载机制，必须使用inflate()才能让他显示
         ViewStub viewStub = getView(R.id.vs_error_refresh);
         if (viewStub != null) {
             errorView = viewStub.inflate();

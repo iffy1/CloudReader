@@ -43,7 +43,7 @@ public class CustomFragment extends BaseFragment<GankViewModel, FragmentAndroidB
     }
 
     @Override
-    public int setContent() {
+    public int getContent() {
         return R.layout.fragment_android;
     }
 

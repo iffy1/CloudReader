@@ -27,7 +27,7 @@ public class TreeFragment extends BaseFragment<TreeViewModel, FragmentWanAndroid
     private FragmentActivity activity;
 
     @Override
-    public int setContent() {
+    public int getContent() {
         return R.layout.fragment_wan_android;
     }
 
